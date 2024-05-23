@@ -1,0 +1,27 @@
+import jinja2
+import pdfkit
+from main import steam_compression_cycle
+import base64
+
+
+def get_image_file_as_base64_data():
+    with open('C:\\Users\\Sergey\\Desktop\\Прога\\scientific-foundations-of-cryology\\VaporcomprDiagram.png', 'rb') as image_file:
+        return base64.b64encode(image_file.read())
+
+
+def main():
+    context = steam_compression_cycle()
+    context['image_string'] = get_image_file_as_base64_data()
+    template_loader = jinja2.FileSystemLoader('./')
+    template_env = jinja2.Environment(loader=template_loader)
+
+    template = template_env.get_template('template.html')
+    output_text = template.render(context)
+
+    config = pdfkit.configuration(wkhtmltopdf="C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe")
+    pdfkit.from_string(output_text, 'steam_compression_cycle.pdf', configuration=config)
+
+
+if __name__ == '__main__':
+    main()
+    print('File has been created')

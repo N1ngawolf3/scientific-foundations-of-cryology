@@ -1,10 +1,9 @@
 import CoolProp.CoolProp as CP
 
 
-sat_liquid = 1
-sat_vapor = 0
-
 def steam_compression_cycle():
+    sat_liquid = 1
+    sat_vapor = 0
     while True:
         try:
             fluid = input('Введите хладагент: ')
@@ -41,14 +40,24 @@ def steam_compression_cycle():
             refr_coef_carno = T4/(T2-T4)
             therm_degree = refr_coef/refr_coef_carno
 
-            return {'qx':q_refr,
-                    'lсж': l_compr,
-                    'холод_коэф': refr_coef,
-                    'холод_коэф_Карно': refr_coef_carno,
-                    'Термод_соверш': therm_degree}
+            return {"p1": round(p1/10**5, 3),
+                    "p2": round(p2/10**5, 3),
+                    'temp_con': temp_con,
+                    'temp_ev': temp_ev,
+                    "h1": round(h1/1000, 3),
+                    "h2": round(h2/1000, 3),
+                    "h3": round(h3/1000, 3),
+                    "h4": round(h4/1000, 3),
+                    "T1": round(T1),
+                    "T2": T2,
+                    "T3": T3,
+                    "T4": T4,
+                    'fluid': fluid,
+                    'q_refr': round(q_refr/1000, 3),
+                    'l_compr': round(l_compr/1000, 3),
+                    'refr_coef': round(refr_coef, 3),
+                    'refr_coef_carno': round(refr_coef_carno, 3),
+                    'therm_degree': round(therm_degree, 3)}
         except Exception as ex:
             print('Проверьте верность введённых данных')
             print(ex)
-
-
-print(steam_compression_cycle())
