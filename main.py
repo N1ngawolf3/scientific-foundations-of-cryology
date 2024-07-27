@@ -1,9 +1,71 @@
 import CoolProp.CoolProp as CP
+import traceback
+import pprint
 
+sat_liquid = 0
+sat_vapor = 1
+
+
+def to_Kvalues(value):
+    return round(value/1000, 3)
+
+
+def to_4_digits(value):
+    return round(value, 4)
+
+def simple_throttling_refr():
+    while True:
+        try:
+            fluid = input('Введите рабочее тело:  ')
+            p1 = int(input("Введите первое давление нагн. [бар]: "))
+            p2 = int(input("Введите второе давление нагн. [бар]: "))
+            p_in = float(input('Введите давление вс. [бар]:  '))
+            p = {'p1': p1*10**5, 'p2': p2*10**5}
+            qoc = 2000 # J
+            Tx = int(input('Введите Tx для вашего варианта [K]: '))
+            T1 = 300  # К
+            T3 = Tx
+            T4 = T3
+            T_ned = 15
+            T5 = T1 - T_ned
+            T6 = T1
+            h1 = [CP.PropsSI("H", "P", p['p1'], 'T', T1, fluid),
+                  CP.PropsSI("H", "P", p['p2'], 'T', T1, fluid)]
+            s1 = [CP.PropsSI("S", "P", p['p1'], 'T', T1, fluid),
+                  CP.PropsSI("S", "P", p['p2'], 'T', T1, fluid)]
+            h5 = [CP.PropsSI("H", "P", p_in*10**5, 'T', T5, fluid),
+                  CP.PropsSI("H", "P", p_in*10**5, 'T', T5, fluid)]
+            s5 = [CP.PropsSI("S", "P", p_in*10**5, 'T', T5, fluid),
+                  CP.PropsSI("S", "P", p_in*10**5, 'T', T5, fluid)]
+            h6 = [CP.PropsSI("H", "P", p_in*10**5, 'T', T6, fluid),
+                  CP.PropsSI("H", "P", p_in*10**5, 'T', T6, fluid)]
+            s6 = [CP.PropsSI("S", "P", p_in*10**5, 'T', T6, fluid),
+                  CP.PropsSI("S", "P", p_in*10**5, 'T', T6, fluid)]
+            qx = []
+            l_compr = []
+            refr_coef = []
+            refr_coef_carno = T4/(T1-T4)
+            therm_degree = []
+            for i in range(2):
+                qx_temp = h5[i] - h1[i] - qoc
+                l_compr_temp = (T1*(s6[i] - s1[i]) - (h6[i] - h1[i]))/0.7
+                refr_coef_temp = qx_temp/l_compr_temp
+                qx.append(qx_temp)
+                l_compr.append(l_compr_temp)
+                refr_coef.append(refr_coef_temp)
+                therm_degree.append(refr_coef_temp/refr_coef_carno)
+                print(refr_coef_temp)
+            return {'fluid': fluid,
+                    'q_refr': list(map(to_Kvalues, qx)),
+                    'l_compr': list(map(to_Kvalues, l_compr)),
+                    'refr_coef': list(map(to_4_digits, refr_coef)),
+                    'refr_coef_carno': to_4_digits(refr_coef_carno),
+                    'therm_degree': list(map(to_4_digits, therm_degree))}
+        except Exception as e:
+            print('Проверьте верность введённых данных')
+            traceback.print_exception(e)
 
 def steam_compression_cycle():
-    sat_liquid = 1
-    sat_vapor = 0
     while True:
         try:
             fluid = input('Введите хладагент: ')
@@ -15,8 +77,8 @@ def steam_compression_cycle():
             T3 = temp_ev
             T4 = T3
 
-            p1 = CP.PropsSI('P', "T", temp_con, 'Q', 0, fluid)
-            p2 = CP.PropsSI('P', "T", temp_ev, 'Q', 1, fluid)
+            p1 = CP.PropsSI('P', "T", temp_con, 'Q', sat_liquid, fluid)
+            p2 = CP.PropsSI('P', "T", temp_ev, 'Q', sat_vapor, fluid)
 
             s4 = CP.PropsSI('S', "T", T4, 'Q', sat_liquid, fluid)
 
@@ -26,13 +88,6 @@ def steam_compression_cycle():
             h4 = CP.PropsSI("H", "P", p2, 'Q', sat_liquid, fluid)
 
             T1 = CP.PropsSI("T", "P", p1, 'S', s4, fluid)
-
-            # print(f'p1 = {round(p1/10**5, 3)} бар', f'p2 = {round(p2/10**5, 3)} бар')
-            # print(f'T1 = {round(T1)} K', f'T2 = {T2} K', f'T3 = {T3} K', f'T4 = {T4} K')
-            # print(f'h1 = {round(h1/1000, 3)} кДж/кг',
-            #       f'h2 = {round(h2/1000, 3)} кДж/кг',
-            #       f'h3 = {round(h3/1000, 3)} кДж/кг',
-            #       f'h4 = {round(h4/1000, 3)} кДж/кг')
 
             q_refr = h4 - h3
             l_compr = h1 - h4
@@ -61,3 +116,8 @@ def steam_compression_cycle():
         except Exception as ex:
             print('Проверьте верность введённых данных')
             print(ex)
+
+
+if __name__ == '__main__':
+    pprint.pprint(simple_throttling_refr())
+    # pprint.pprint(steam_compression_cycle())
