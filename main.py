@@ -1,6 +1,6 @@
 import CoolProp.CoolProp as CP
 import traceback
-from config import sat_liquid, sat_vapor, qoc
+from config import sat_liquid, sat_vapor, qoc, T1, eta_isot, T_ned
 from math import log
 
 
@@ -20,8 +20,6 @@ def simple_throttling_liq():
             p2 = int(input("Введите второе давление нагн. [бар]: "))
             p_in = float(input('Введите давление вс. [бар]:  '))
             p = {'p1': p1*10**5, 'p2': p2*10**5}
-            T1 = 300  # К
-            T_ned = 15
             T5 = T1 - T_ned
             T6 = T1
             h_liq = [CP.PropsSI("H", "P", p_in * 10 ** 5, "Q", 0, fluid),
@@ -47,7 +45,7 @@ def simple_throttling_liq():
             therm_degree = []
             for i in range(2):
                 x_temp = (h5[i] - h1[i] - qoc)/(h5[i] - h_liq[i])
-                l_compr_temp = (T1*(s6[i] - s1[i]) - (h6[i] - h1[i]))/0.7
+                l_compr_temp = (T1*(s6[i] - s1[i]) - (h6[i] - h1[i]))/eta_isot
                 print(s6[i], s_liq[i])
                 print(h6[i], h_liq[i])
                 l_min_temp = T1 * (s6[i] - s_liq[i]) - (h6[i] - h_liq[i])
@@ -77,10 +75,8 @@ def simple_throttling_refr():
             p_in = float(input('Введите давление вс. [бар]:  '))
             p = {'p1': p1*10**5, 'p2': p2*10**5}
             Tx = int(input('Введите Tx для вашего варианта [K]: '))
-            T1 = 300  # К
             T3 = Tx
             T4 = T3
-            T_ned = 15
             T5 = T1 - T_ned
             T6 = T1
             h1 = [CP.PropsSI("H", "P", p['p1'], 'T', T1, fluid),
@@ -102,7 +98,7 @@ def simple_throttling_refr():
             therm_degree = []
             for i in range(2):
                 qx_temp = h5[i] - h1[i] - qoc
-                l_compr_temp = (T1*(s6[i] - s1[i]) - (h6[i] - h1[i]))/0.7
+                l_compr_temp = (T1*(s6[i] - s1[i]) - (h6[i] - h1[i]))/eta_isot
                 refr_coef_temp = qx_temp/l_compr_temp
                 qx.append(qx_temp)
                 l_compr.append(l_compr_temp)
@@ -125,14 +121,11 @@ def throttling_prerefr_refr():
             fluid = input('Введите рабочее тело:  ')
             p1 = int(input("Введите первое давление нагн. [бар]: "))
             p2 = int(input("Введите второе давление нагн. [бар]: "))
-            # p_in = float(input('Введите давление вс. [бар]:  '))
             Tx = int(input('Введите Tx для вашего варианта [K]: '))
             T_pre = int(input('Введите температуру ПО [К]: '))
             ql = float(input('Введите уд. работу ПО [КДж]: '))
             p = {'p1': p1*10**5, 'p2': p2*10**5}
             p_in = CP.PropsSI('P', "T", Tx, 'Q', 0, fluid)
-            T_ned = 15
-            T1 = 300  # К
             T3 = T_pre
             T7 = T_pre - T_ned
             T9 = T1
@@ -153,7 +146,7 @@ def throttling_prerefr_refr():
             # s_liq = CP.PropsSI('S', "P", p_in, 'Q', sat_liquid, fluid)
             #TODO найти задачу полную и дописать
             # обработка отрицательных значений потом
-
+            
             # qx = []
             # l_compr = []
             # l_compr_iz = []
@@ -166,7 +159,7 @@ def throttling_prerefr_refr():
             # for i in range(2):
             #     qx_temp = h7[i] - h3[i] - qoc
             #     l_compr_temp_iz = (T1*(s9[i] - s1[i]) - (h9[i] - h1[i]))
-            #     l_compr_temp = l_compr_temp_iz/0.7
+            #     l_compr_temp = l_compr_temp_iz/eta_isot
             #     l_pre_temp = qx_temp/ql
             #     l_temp = l_compr_temp + l_pre_temp
             #     x_temp = ((h7[i] - h3[i])-qoc)/(h7[i] - h_liq)
@@ -207,8 +200,6 @@ def throttling_prerefr_liq():
             T_pre = int(input('Введите температуру ПО [К]: '))
             ql = float(input('Введите уд. работу ПО [КДж]: '))
             p = {'p1': p1*10**5, 'p2': p2*10**5}
-            T_ned = 15
-            T1 = 300  # К
             T3 = T_pre
             T7 = T_pre - T_ned
             T9 = T1
@@ -239,7 +230,7 @@ def throttling_prerefr_liq():
             for i in range(2):
                 qx_temp = h7[i] - h3[i] - qoc
                 l_compr_temp_iz = (T1*(s9[i] - s1[i]) - (h9[i] - h1[i]))
-                l_compr_temp = l_compr_temp_iz/0.7
+                l_compr_temp = l_compr_temp_iz/eta_isot
                 l_pre_temp = qx_temp/ql
                 l_temp = l_compr_temp + l_pre_temp
                 x_temp = ((h7[i] - h3[i])-qoc)/(h7[i] - h_liq)
@@ -281,8 +272,6 @@ def double_throttling_liq():
             D = float(input('Введите долю промежуточного потока:  '))
             p = {'p1': p1*10**5, 'p2': p2*10**5}
             R = float(input('Введите газовую постоянную [Дж/кг*К]: '))
-            T_ned = 15
-            T1 = 300  # К
             T4 = CP.PropsSI('T', 'P', pD * 10 ** 5, 'Q', 0, fluid)
             T8 = T4
             T5 = CP.PropsSI('T', 'P', p_in * 10 ** 5, 'Q', 0, fluid)
@@ -321,8 +310,8 @@ def double_throttling_liq():
             eta_T = []
             for i in range(2):
                 x_temp = (delta_hT1[i] - D*delta_hT2[i] - (c_p7[i] * T_ned - D*c_p9[i]*T_ned) - qoc)/(h7[i] - c_p7[i] * T_ned - h_liq[i])
-                l_compr_temp_1 = ((1 - D) * R * T1 * log(pD/p_in))/0.7
-                l_compr_temp_2 = (R * T1 * log(p[f'p{i+1}']/(pD * 10 ** 5)))/0.7
+                l_compr_temp_1 = ((1 - D) * R * T1 * log(pD/p_in))/eta_isot
+                l_compr_temp_2 = (R * T1 * log(p[f'p{i+1}']/(pD * 10 ** 5)))/eta_isot
                 l_compr_temp = l_compr_temp_2 + l_compr_temp_1
                 Ne0_temp = l_compr_temp/x_temp
                 l_min_temp = T1 * (s1_I[i] - s_liq[i]) - (h1_I[i] - h_liq[i])
@@ -354,8 +343,6 @@ def double_throttling_refr(): #TODO доделать, значения h7 & s9 �
             D = float(input('Введите долю промежуточного потока: '))
             p = {'p1': p1*10**5, 'p2': p2*10**5}
             p_in = CP.PropsSI('P', "T", Tx, 'Q', 1, fluid)
-            T_ned = 15
-            T1 = 300  # К
             T4 = CP.PropsSI('T', 'P', pD * 10 ** 5, 'Q', 0, fluid)
             T8 = T4
             T5 = Tx
@@ -386,8 +373,8 @@ def double_throttling_refr(): #TODO доделать, значения h7 & s9 �
             eta_T = []
             for i in range(2):
                 qx_temp = (h7[i] - h1[i]) - D * (h7[i] - h9[i]) - qoc
-                l_compr_temp_1 = (T1*(s9[i] - s1[i]) - (h9[i] - h1[i]))/0.7
-                l_compr_temp_2 = (1 - D) * (T1*(s9[i] - s1[i]) - (h9[i] - h1[i]))/0.7
+                l_compr_temp_1 = (T1*(s9[i] - s1[i]) - (h9[i] - h1[i]))/eta_isot
+                l_compr_temp_2 = (1 - D) * (T1*(s9[i] - s1[i]) - (h9[i] - h1[i]))/eta_isot
                 l_compr_temp = l_compr_temp_2 + l_compr_temp_1
                 refr_coef_temp = qx_temp/l_compr_temp
                 refr_coef_Carno = T6/(T1-T6)
@@ -453,7 +440,6 @@ def steam_compression_cycle():
 
 
 if __name__ == '__main__':
-
     # answer = (simple_throttling_liq()
     # answer = simple_throttling_refr()
     # answer = throttling_prerefr_liq()
@@ -463,5 +449,3 @@ if __name__ == '__main__':
     answer = double_throttling_refr()
     for variable, value in answer.items():
         print(f"{variable} --- {value}")
-
-

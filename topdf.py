@@ -1,6 +1,6 @@
 import jinja2
 import pdfkit
-from main import steam_compression_cycle
+from main import *
 import base64
 
 
