@@ -153,6 +153,7 @@ def throttling_prerefr_refr():
             # s_liq = CP.PropsSI('S', "P", p_in, 'Q', sat_liquid, fluid)
             #TODO найти задачу полную и дописать
             # обработка отрицательных значений потом
+
             # qx = []
             # l_compr = []
             # l_compr_iz = []
