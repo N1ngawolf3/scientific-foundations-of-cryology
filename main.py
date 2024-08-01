@@ -63,8 +63,7 @@ def simple_throttling_liq():
             print('Проверьте верность введённых данных')
             traceback.print_exception(e)
 
-#TODO c какого хрена тут две функции для ПД одинаковые
-# исправить
+
 def simple_throttling_refr():
     while True:
         try:
@@ -84,15 +83,13 @@ def simple_throttling_refr():
                   CP.PropsSI("S", "P", p['p2'], 'T', T1, fluid)]
             h5 = [CP.PropsSI("H", "P", p_in, 'T', T5, fluid),
                   CP.PropsSI("H", "P", p_in, 'T', T5, fluid)]
-            s5 = [CP.PropsSI("S", "P", p_in, 'T', T5, fluid),
-                  CP.PropsSI("S", "P", p_in, 'T', T5, fluid)]
             h6 = [CP.PropsSI("H", "P", p_in, 'T', T6, fluid),
                   CP.PropsSI("H", "P", p_in, 'T', T6, fluid)]
             s6 = [CP.PropsSI("S", "P", p_in, 'T', T6, fluid),
                   CP.PropsSI("S", "P", p_in, 'T', T6, fluid)]
             qx = []
             l_compr = []
-            Ne0 = []
+            refr_coef = []
             refr_coef_carno = T4/(T1-T4)
             therm_degree = []
             for i in range(2):
@@ -101,12 +98,12 @@ def simple_throttling_refr():
                 refr_coef_temp = qx_temp/l_compr_temp
                 qx.append(qx_temp)
                 l_compr.append(l_compr_temp)
-                Ne0.append(refr_coef_temp)
+                refr_coef.append(refr_coef_temp)
                 therm_degree.append(refr_coef_temp/refr_coef_carno)
             return {'fluid': fluid,
                     'qx': list(map(to_kvalues, qx)),
                     'l_compr': list(map(to_kvalues, l_compr)),
-                    'Ne0': list(map(to_4_digits, Ne0)),
+                    'refr_coef': list(map(to_4_digits, refr_coef)),
                     'refr_coef_carno': to_4_digits(refr_coef_carno),
                     'therm_degree': list(map(to_4_digits, therm_degree))}
         except Exception as e:
@@ -405,9 +402,9 @@ def steam_compression_cycle():
 
 if __name__ == '__main__':
     # answer = simple_throttling_liq()
-    # answer = simple_throttling_refr()
+    answer = simple_throttling_refr()
     # answer = throttling_prerefr_liq()
-    answer = throttling_prerefr_refr()
+   # £ answer = throttling_prerefr_refr()
     # answer = double_throttling_liq()
     # answer = steam_compression_cycle()
     # answer = double_throttling_refr()
