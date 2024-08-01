@@ -10,12 +10,12 @@ def get_image_vaporcomprdiagram():
 
 
 def main():
-    context = steam_compression_cycle()
+    context = simple_throttling_refr()
     context['image'] = get_image_vaporcomprdiagram()
     template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
 
-    template = template_env.get_template('template.html')
+    template = template_env.get_template('SimpleThrottlingRefr.html')
     output_text = template.render(context)
 
     config = pdfkit.configuration(wkhtmltopdf="C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe")

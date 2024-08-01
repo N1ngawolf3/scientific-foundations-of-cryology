@@ -1,6 +1,6 @@
 import CoolProp.CoolProp as CP
 import traceback
-from config import sat_liquid, sat_vapor, qoc, T1, eta_isot, T_ned
+from config import sat_liquid, sat_vapor, qoc, T1, eta_isot, T_ned, T_pre, ql
 from math import log
 
 
@@ -63,7 +63,8 @@ def simple_throttling_liq():
             print('Проверьте верность введённых данных')
             traceback.print_exception(e)
 
-
+#TODO c какого хрена тут две функции для ПД одинаковые
+# исправить
 def simple_throttling_refr():
     while True:
         try:
@@ -103,7 +104,7 @@ def simple_throttling_refr():
                 Ne0.append(refr_coef_temp)
                 therm_degree.append(refr_coef_temp/refr_coef_carno)
             return {'fluid': fluid,
-                    'q_refr': list(map(to_kvalues, qx)),
+                    'qx': list(map(to_kvalues, qx)),
                     'l_compr': list(map(to_kvalues, l_compr)),
                     'Ne0': list(map(to_4_digits, Ne0)),
                     'refr_coef_carno': to_4_digits(refr_coef_carno),
@@ -120,8 +121,6 @@ def throttling_prerefr_refr():
             p1 = int(input("Введите первое давление нагн. [бар]: "))
             p2 = int(input("Введите второе давление нагн. [бар]: "))
             Tx = int(input('Введите Tx для вашего варианта [K]: '))
-            T_pre = int(input('Введите температуру ПО [К]: '))
-            ql = float(input('Введите уд. работу ПО [КДж]: '))
             p = {'p1': p1*10**5, 'p2': p2*10**5}
             p_in = CP.PropsSI('P', "T", Tx, 'Q', 0, fluid)
             T3 = T_pre
@@ -178,8 +177,6 @@ def throttling_prerefr_liq():
             p1 = int(input("Введите первое давление нагн. [бар]: "))
             p2 = int(input("Введите второе давление нагн. [бар]: "))
             p_in = float(input('Введите давление вс. [бар]:  '))
-            T_pre = int(input('Введите температуру ПО [К]: '))
-            ql = float(input('Введите уд. работу ПО [КДж]: '))
             p = {'p1': p1*10**5, 'p2': p2*10**5}
             T3 = T_pre
             T7 = T_pre - T_ned
@@ -196,7 +193,6 @@ def throttling_prerefr_liq():
                   CP.PropsSI("H", "P", p_in*10**5, 'T', T9, fluid)]
             s9 = [CP.PropsSI("S", "P", p_in*10**5, 'T', T9, fluid),
                   CP.PropsSI("S", "P", p_in*10**5, 'T', T9, fluid)]
-            T_liq = CP.PropsSI('T', "P", p_in*10**5, 'Q', sat_vapor, fluid)
             h_liq = CP.PropsSI('H', "P", p_in*10**5, 'Q', sat_liquid, fluid)
             s_liq = CP.PropsSI('S', "P", p_in*10**5, 'Q', sat_liquid, fluid)
             qx = []
@@ -411,9 +407,9 @@ if __name__ == '__main__':
     # answer = simple_throttling_liq()
     # answer = simple_throttling_refr()
     # answer = throttling_prerefr_liq()
-    # answer = throttling_prerefr_refr()
+    answer = throttling_prerefr_refr()
     # answer = double_throttling_liq()
     # answer = steam_compression_cycle()
-    answer = double_throttling_refr()
+    # answer = double_throttling_refr()
     for variable, value in answer.items():
         print(f"{variable} --- {value}")
