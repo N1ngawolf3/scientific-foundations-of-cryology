@@ -46,8 +46,6 @@ def simple_throttling_liq():
             for i in range(2):
                 x_temp = (h5[i] - h1[i] - qoc)/(h5[i] - h_liq[i])
                 l_compr_temp = (T1*(s6[i] - s1[i]) - (h6[i] - h1[i]))/eta_isot
-                print(s6[i], s_liq[i])
-                print(h6[i], h_liq[i])
                 l_min_temp = T1 * (s6[i] - s_liq[i]) - (h6[i] - h_liq[i])
                 Ne0_temp = l_compr_temp/x_temp
                 x.append(x_temp)
@@ -72,9 +70,9 @@ def simple_throttling_refr():
             fluid = input('Введите рабочее тело:  ')
             p1 = int(input("Введите первое давление нагн. [бар]: "))
             p2 = int(input("Введите второе давление нагн. [бар]: "))
-            p_in = float(input('Введите давление вс. [бар]:  '))
             p = {'p1': p1*10**5, 'p2': p2*10**5}
             Tx = int(input('Введите Tx для вашего варианта [K]: '))
+            p_in = CP.PropsSI('P', 'T', Tx, 'Q', 0 , fluid)
             T3 = Tx
             T4 = T3
             T5 = T1 - T_ned
@@ -83,14 +81,14 @@ def simple_throttling_refr():
                   CP.PropsSI("H", "P", p['p2'], 'T', T1, fluid)]
             s1 = [CP.PropsSI("S", "P", p['p1'], 'T', T1, fluid),
                   CP.PropsSI("S", "P", p['p2'], 'T', T1, fluid)]
-            h5 = [CP.PropsSI("H", "P", p_in*10**5, 'T', T5, fluid),
-                  CP.PropsSI("H", "P", p_in*10**5, 'T', T5, fluid)]
-            s5 = [CP.PropsSI("S", "P", p_in*10**5, 'T', T5, fluid),
-                  CP.PropsSI("S", "P", p_in*10**5, 'T', T5, fluid)]
-            h6 = [CP.PropsSI("H", "P", p_in*10**5, 'T', T6, fluid),
-                  CP.PropsSI("H", "P", p_in*10**5, 'T', T6, fluid)]
-            s6 = [CP.PropsSI("S", "P", p_in*10**5, 'T', T6, fluid),
-                  CP.PropsSI("S", "P", p_in*10**5, 'T', T6, fluid)]
+            h5 = [CP.PropsSI("H", "P", p_in, 'T', T5, fluid),
+                  CP.PropsSI("H", "P", p_in, 'T', T5, fluid)]
+            s5 = [CP.PropsSI("S", "P", p_in, 'T', T5, fluid),
+                  CP.PropsSI("S", "P", p_in, 'T', T5, fluid)]
+            h6 = [CP.PropsSI("H", "P", p_in, 'T', T6, fluid),
+                  CP.PropsSI("H", "P", p_in, 'T', T6, fluid)]
+            s6 = [CP.PropsSI("S", "P", p_in, 'T', T6, fluid),
+                  CP.PropsSI("S", "P", p_in, 'T', T6, fluid)]
             qx = []
             l_compr = []
             Ne0 = []
@@ -129,6 +127,7 @@ def throttling_prerefr_refr():
             T3 = T_pre
             T7 = T_pre - T_ned
             T9 = T1
+            T8 = T1 - T_ned
             h1 = [CP.PropsSI("H", "P", p['p1'], 'T', T1, fluid),
                   CP.PropsSI("H", "P", p['p2'], 'T', T1, fluid)]
             s1 = [CP.PropsSI("S", "P", p['p1'], 'T', T1, fluid),
@@ -137,54 +136,36 @@ def throttling_prerefr_refr():
                   CP.PropsSI("H", "P", p['p2'], 'T', T3, fluid)]
             h7 = [CP.PropsSI("H", "P", p_in, 'T', T7, fluid),
                   CP.PropsSI("H", "P", p_in, 'T', T7, fluid)]
-            h9 = [CP.PropsSI("H", "P", p_in, 'T', T9, fluid),
-                  CP.PropsSI("H", "P", p_in, 'T', T9, fluid)]
-            s9 = [CP.PropsSI("S", "P", p_in, 'T', T9, fluid),
-                  CP.PropsSI("S", "P", p_in, 'T', T9, fluid)]
-            # T_liq = CP.PropsSI('T', "P", p_in, 'Q', sat_vapor, fluid)
-            # h_liq = CP.PropsSI('H', "P", p_in, 'Q', sat_liquid, fluid)
-            # s_liq = CP.PropsSI('S', "P", p_in, 'Q', sat_liquid, fluid)
-            #TODO найти задачу полную и дописать
-            # обработка отрицательных значений потом
-            
-            # qx = []
-            # l_compr = []
-            # l_compr_iz = []
-            # l = []
-            # l_min = []
-            # Ne0 = []
-            # x = []
-            # l_pre = []
-            # eta_T = []
-            # for i in range(2):
-            #     qx_temp = h7[i] - h3[i] - qoc
-            #     l_compr_temp_iz = (T1*(s9[i] - s1[i]) - (h9[i] - h1[i]))
-            #     l_compr_temp = l_compr_temp_iz/eta_isot
-            #     l_pre_temp = qx_temp/ql
-            #     l_temp = l_compr_temp + l_pre_temp
-            #     x_temp = ((h7[i] - h3[i])-qoc)/(h7[i] - h_liq)
-            #     Ne0_temp = l_temp/x_temp
-            #     l_min_temp = T1*(s9[i] - s_liq) - (h9[i] - h_liq)
-            #     eta_T_temp = l_min_temp/Ne0_temp
-            #     qx.append(qx_temp)
-            #     l_compr.append(l_compr_temp)
-            #     l_compr_iz.append(l_compr_temp_iz)
-            #     l.append(l_temp)
-            #     l_min.append(l_min_temp)
-            #     Ne0.append(Ne0_temp)
-            #     x.append(x_temp)
-            #     l_pre.append(l_pre_temp)
-            #     eta_T.append(eta_T_temp)
-            # return {'fluid': fluid,
-            #         'qx [кДж]': list(map(to_kvalues, qx)),
-            #         'l_compr [кДж]': list(map(to_kvalues, l_compr)),
-            #         'l_compr_iz [кДж]': list(map(to_kvalues, l_compr_iz)),
-            #         'l [кДж]': list(map(to_kvalues, l)),
-            #         'l_min [кДж]': list(map(to_kvalues, l_min)),
-            #         'Ne0 [кДж]': list(map(to_kvalues, Ne0)),
-            #         'x [-]': list(map(to_4_digits, x)),
-            #         'l_pre [кДж]': list(map(to_kvalues, l_pre)),
-            #         'eta_T [-]': list(map(to_4_digits, eta_T))}
+            h8 = [CP.PropsSI("H", "P", p_in, 'T', T8, fluid),
+                  CP.PropsSI("H", "P", p_in, 'T', T8, fluid)]
+            s8 = [CP.PropsSI("S", "P", p_in, 'T', T8, fluid),
+                  CP.PropsSI("S", "P", p_in, 'T', T8, fluid)]
+            qx = []
+            l_compr = []
+            l = []
+            l_pre = []
+            refr_coef = []
+            refr_coef_Carno = [Tx/(T1-Tx), Tx/(T1-Tx)]
+            eta_T = []
+            for i in range(2):
+                qx_temp = h7[i] - h3[i] - qoc
+                l_compr_temp = (T1 * (s8[i] - s1[i]) - (h8[i] - h1[i]))/eta_isot
+                l_pre_temp = qx_temp/ql
+                l_temp = l_compr_temp + l_pre_temp
+                refr_coef_temp = qx_temp/l_temp
+                eta_T_temp = refr_coef_temp/refr_coef_Carno[0]
+                qx.append(qx_temp)
+                l_compr.append(l_compr_temp)
+                l_pre.append(l_pre_temp)
+                refr_coef.append(refr_coef_temp)
+                eta_T.append(eta_T_temp)
+            return {'fluid': fluid,
+                    'qx [кДж]': list(map(to_kvalues, qx)),
+                    'l_compr [кДж]': list(map(to_kvalues, l_compr)),
+                    'l [кДж]': list(map(to_kvalues, l)),
+                    'refr_coef [-]': list(map(to_4_digits, refr_coef)),
+                    'l_pre [кДж]': list(map(to_kvalues, l_pre)),
+                    'eta_T [-]': list(map(to_4_digits, eta_T))}
         except Exception as e:
             print('Проверьте верность введённых данных')
             traceback.print_exception(e)
@@ -275,8 +256,6 @@ def double_throttling_liq():
             T4 = CP.PropsSI('T', 'P', pD * 10 ** 5, 'Q', 0, fluid)
             T8 = T4
             T5 = CP.PropsSI('T', 'P', p_in * 10 ** 5, 'Q', 0, fluid)
-            T_liq = T5
-            T6 = T5
             T7 = T1 - T_ned
             T9 = T1 - T_ned
             h1 = [CP.PropsSI("H", "P", p['p1'], 'T', T1, fluid),
@@ -289,18 +268,16 @@ def double_throttling_liq():
                     CP.PropsSI("S", "P", p_in * 10 ** 5, 'T', T1, fluid)]
             h1_II = [CP.PropsSI("H", "P", pD * 10 ** 5, 'T', T1, fluid),
                      CP.PropsSI("H", "P", pD * 10 ** 5, 'T', T1, fluid)]
-            s1_II = [CP.PropsSI("S", "P", pD * 10 ** 5, 'T', T1, fluid),
-                     CP.PropsSI("S", "P", pD * 10 ** 5, 'T', T1, fluid)]
             c_p7 = [CP.PropsSI("C", "P", p_in * 10 ** 5, 'T', T7, fluid),
                     CP.PropsSI("C", "P", p_in * 10 ** 5, 'T', T7, fluid)]
             c_p9 = [CP.PropsSI("C", "P", pD, 'T', T9, fluid),
                     CP.PropsSI("C", "P", pD, 'T', T9, fluid)]
-            h7 = [CP.PropsSI("H", "P", p_in * 10 **5, 'T', T7, fluid),
-                  CP.PropsSI("H", "P", p_in * 10 **5, 'T', T7, fluid)]
-            h_liq = [CP.PropsSI("H", "P", p_in * 10 **5, 'Q', 0, fluid),
-                     CP.PropsSI("H", "P", p_in * 10 **5, 'Q', 0, fluid)]
-            s_liq = [CP.PropsSI("S", "P", p_in * 10 **5, 'Q', 0, fluid),
-                     CP.PropsSI("S", "P", p_in * 10 **5, 'Q', 0, fluid)]
+            h7 = [CP.PropsSI("H", "P", p_in * 10 ** 5, 'T', T7, fluid),
+                  CP.PropsSI("H", "P", p_in * 10 ** 5, 'T', T7, fluid)]
+            h_liq = [CP.PropsSI("H", "P", p_in * 10 ** 5, 'Q', 0, fluid),
+                     CP.PropsSI("H", "P", p_in * 10 ** 5, 'Q', 0, fluid)]
+            s_liq = [CP.PropsSI("S", "P", p_in * 10 ** 5, 'Q', 0, fluid),
+                     CP.PropsSI("S", "P", p_in * 10 ** 5, 'Q', 0, fluid)]
             delta_hT1 = [h1_I[0] - h1[0], h1_I[1] - h1[1]]
             delta_hT2 = [h1_I[0] - h1_II[0], h1_I[1] - h1_II[1]]
             x = []
@@ -332,7 +309,7 @@ def double_throttling_liq():
             traceback.print_exception(e)
 
 
-def double_throttling_refr(): #TODO доделать, значения h7 & s9 неверные
+def double_throttling_refr():
     while True:
         try:
             fluid = input('Введите рабочее тело:  ')
@@ -343,10 +320,7 @@ def double_throttling_refr(): #TODO доделать, значения h7 & s9 �
             D = float(input('Введите долю промежуточного потока: '))
             p = {'p1': p1*10**5, 'p2': p2*10**5}
             p_in = CP.PropsSI('P', "T", Tx, 'Q', 1, fluid)
-            T4 = CP.PropsSI('T', 'P', pD * 10 ** 5, 'Q', 0, fluid)
-            T8 = T4
             T5 = Tx
-            T_liq = T5
             T6 = T5
             T7 = T1 - T_ned
             T9 = T1 - T_ned
@@ -354,19 +328,12 @@ def double_throttling_refr(): #TODO доделать, значения h7 & s9 �
                   CP.PropsSI("H", "P", p['p2'], 'T', T1, fluid)]
             s1 = [CP.PropsSI("S", "P", p['p1'], 'T', T1, fluid),
                   CP.PropsSI("S", "P", p['p2'], 'T', T1, fluid)]
-            h7 = [CP.PropsSI("H", "P", p_in * 10 ** 5, 'T', T7, fluid),
-                  CP.PropsSI("H", "P", p_in * 10 ** 5, 'T', T7, fluid)]
-            s7 = [CP.PropsSI("S", "P", p_in * 10 ** 5, 'T', T7, fluid),
-                  CP.PropsSI("S", "P", p_in * 10 ** 5, 'T', T7, fluid)]
-            h9 = [CP.PropsSI("H", "P", pD * 10 ** 5, 'Q', 0, fluid),
-                  CP.PropsSI("H", "P", pD * 10 ** 5, 'Q', 0, fluid)]
-            s9 = [CP.PropsSI("S", "P", pD * 10 ** 5, 'Q', 0, fluid),
-                  CP.PropsSI("S", "P", pD * 10 ** 5, 'Q', 0, fluid)]
-            print('s1 -- ', *s1)
-            print('h1 -- ', *h1)
-            print('s7 -- ', *s7)
-            print('h7 -- ', *h7)
-
+            h7 = [CP.PropsSI("H", "P", p_in, 'T', T7, fluid),
+                  CP.PropsSI("H", "P", p_in, 'T', T7, fluid)]
+            h9 = [CP.PropsSI("H", "P", pD * 10 ** 5, 'T', T9, fluid),
+                  CP.PropsSI("H", "P", pD * 10 ** 5, 'T', T9, fluid)]
+            s9 = [CP.PropsSI("S", "P", pD * 10 ** 5, 'T', T9, fluid),
+                  CP.PropsSI("S", "P", pD * 10 ** 5, 'T', T9, fluid)]
             qx = []
             l_compr = []
             refr_coef = []
@@ -385,6 +352,7 @@ def double_throttling_refr(): #TODO доделать, значения h7 & s9 �
             return {'fluid': fluid,
                     'qx [кДж]': list(map(to_kvalues, qx)),
                     'l_compr [кДж]': list(map(to_kvalues, l_compr)),
+                    'refr_coef_Carno [кДж]': to_4_digits(refr_coef_Carno),
                     'refr_coef [кДж]': list(map(to_4_digits, refr_coef)),
                     'eta_T [-]': list(map(to_4_digits, eta_T))}
         except Exception as e:
@@ -440,7 +408,7 @@ def steam_compression_cycle():
 
 
 if __name__ == '__main__':
-    # answer = (simple_throttling_liq()
+    # answer = simple_throttling_liq()
     # answer = simple_throttling_refr()
     # answer = throttling_prerefr_liq()
     # answer = throttling_prerefr_refr()
