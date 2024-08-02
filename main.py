@@ -12,6 +12,10 @@ def to_4_digits(decimal_value):
     return round(decimal_value, 4)
 
 
+#TODO привести данные на выходе из фции к одному виду, как-то отловить ошибку с Аргоном
+#Добавить БД для сохранения решённых задач, фамилий, варианта и тд и тп
+
+
 def simple_throttling_liq():
     while True:
         try:
@@ -352,9 +356,9 @@ def steam_compression_cycle():
         try:
             fluid = input('Введите хладагент: ')
             temp_con = int(input('Введите температуру конденсации в '
-                                 '!!градусах Цельсия!!: ')) + 273  # K
+                                 '[C]: ')) + 273  # K
             temp_ev = int(input('Введите температуру испарение в '
-                                '!!градусах Цельсия!!: ')) + 273  # K
+                                '[C]: ')) + 273  # K
             t2 = temp_con
             t3 = temp_ev
             t4 = t3
@@ -371,24 +375,24 @@ def steam_compression_cycle():
             ne0 = q_refr/l_compr
             refr_coef_carno = t4/(t2-t4)
             therm_degree = ne0/refr_coef_carno
-            return {"p1": round(p1/10**5, 3),
-                    "p2": round(p2/10**5, 3),
-                    'T_con': temp_con,
-                    'T_ev': temp_ev,
-                    "h1": round(h1/1000, 3),
-                    "h2": round(h2/1000, 3),
-                    "h3": round(h3/1000, 3),
-                    "h4": round(h4/1000, 3),
-                    "T1": t1_sc,
-                    "T2": t2,
-                    "T3": t3,
-                    "T4": t4,
+            return {"p1": round(p1/10**5, 3),  # bar
+                    "p2": round(p2/10**5, 3),   # bar
+                    'T_con': temp_con,  # K
+                    'T_ev': temp_ev,  # K
+                    "h1": to_kvalues(h1),  # KJ/kg
+                    "h2": to_kvalues(h2),  # KJ/kg
+                    "h3": to_kvalues(h3),  # KJ/kg
+                    "h4": to_kvalues(h4),  # KJ/kg
+                    "T1": t1_sc,  # K
+                    "T2": t2,  # K
+                    "T3": t3,  # K
+                    "T4": t4,  # K
                     'fluid': fluid,
-                    'q_refr': round(q_refr/1000, 3),
-                    'l_compr': round(l_compr/1000, 3),
+                    'q_refr': to_kvalues(q_refr),  # KJ/kg
+                    'l_compr': to_kvalues(l_compr),  # KJ/kg
                     'Ne0': round(ne0, 3),
-                    'refr_coef_carno': round(refr_coef_carno, 3),
-                    'therm_degree': round(therm_degree, 3)}
+                    'refr_coef_carno': round(refr_coef_carno, 3),  # [-]
+                    'therm_degree': round(therm_degree, 3)}  # [-]
         except Exception as ex:
             print(ex)
 
