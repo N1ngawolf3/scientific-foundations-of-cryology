@@ -1,0 +1,68 @@
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<p><strong>Необходимо определить для:</strong><br />Рефрижераторных циклов - удельную холодопроизводительность, холодильный<br />коэффициент и степень термодинамического совершенства цикла;</p>
+<p>Oжижительных циклов - коэффициент ожижения, затраты энергии для получения 1кг жидкого продукта и степень термодинамического совершенства.</p>
+<p style="text-align: center;"><strong>Цикл Простого Дросселирования</strong></p>
+<p style="text-align: center;"><strong>Рефрижераторный режим</strong></p>
+<p style="text-align: left;">Дано: {{fluid}}&nbsp; p2 = {{p1, p2}}*10<sup>5</sup> Па&nbsp; &nbsp;T1 = {{T1}} К</p>
+<p style="text-align: center;"><strong>Решение</strong></p>
+<p style="text-align: left;">T3 = Tx = {{Tx}} K&nbsp; h1 = {{h1}} КДж/кг&nbsp; s1 = {{s1}} КДж/кг*K</p>
+<p style="text-align: left;">T4 = T3 = {{Tx}} K&nbsp; </p>
+<p style="text-align: left;">T5 = T1 - &Delta;Tн = {{T5}} K h5 = {{h5}} КДж/кг&nbsp; </p>
+<p style="text-align: left;">T6 = T1 = {{T1}} h6 = {{h6}} КДж/кг&nbsp; s6 = {{s6}} КДж/кг*K</p>
+<p style="text-align: left;">Полезная холодопроизводительность: qx = h5 - h1 - qoc = {{qx}} КДж/кг</p>
+<p style="text-align: left;">Затр. работа на сжатие в компр.: <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+    <mi>lсж</mi> <mo>=</mo>
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi>T1·(s6-s1)-(h6-h1)</mi>
+      </mrow>
+      <mrow>
+        <mn>&eta;из</mn>
+      </mrow>
+    </mfrac>
+  </mrow>
+    <mo>=</mo> <mo>{{l_compr}} КДж/кг</mo>
+</math>
+<p style="text-align: left;">Холодильный коэффициент:<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+    <mi>&epsilon;</mi> <mo>=</mo>
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi>qx</mi>
+      </mrow>
+      <mrow>
+        <mn>lсж</mn>
+      </mrow>
+    </mfrac>
+  </mrow>
+    <mo>=</mo> <mo>{{refr_coef}}</mo>
+</math>
+</p>
+<p style="text-align: left;">Холодильный коэффициент цикла Карно: <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+    <mi>&epsilon;k</mi> <mo>=</mo>
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi>T4</mi>
+      </mrow>
+      <mrow>
+        <mn>T1 - T4 </mn>
+      </mrow>
+    </mfrac>
+  </mrow>
+    <mo>=</mo> <mo>{{refr_coef_carno}}</mo>
+</math>
+<p style="text-align: left;">Степень термодинамического совершенствования:<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+   <mi>&eta;T</mi> <mo>=</mo><mfrac>
+      <mrow>
+        <mi>&epsilon;</mi>
+      </mrow>
+      <mrow>
+        <mn>&epsilon;k</mn>
+      </mrow>
+    </mfrac>
+  </mrow>
+    <mo>= {{therm_degree}} </mo>
+</math>
+<p style="text-align: left;">&nbsp;</p>

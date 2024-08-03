@@ -12,7 +12,7 @@ def to_4_digits(decimal_value):
     return round(decimal_value, 4)
 
 
-#TODO привести данные на выходе из фции к одному виду, как-то отловить ошибку с Аргоном
+
 #Добавить БД для сохранения решённых задач, фамилий, варианта и тд и тп
 
 
@@ -61,9 +61,9 @@ def simple_throttling_liq():
                     'Ne0': list(map(to_kvalues, ne0)),
                     'l_min': list(map(to_kvalues, l_min)),
                     'therm_degree': list(map(to_4_digits, therm_degree))}
-        except Exception as e:
+        except Exception as ex:
             print('Проверьте верность введённых данных')
-            traceback.print_exception(e)
+            print(ex)
 
 
 def simple_throttling_refr():
@@ -103,14 +103,24 @@ def simple_throttling_refr():
                 refr_coef.append(refr_coef_temp)
                 therm_degree.append(refr_coef_temp/refr_coef_carno)
             return {'fluid': fluid,
+                    'p1': p['p1']/(10 ** 5),
+                    'p2': p['p2']/(10 ** 5),
+                    'T1': t1,
+                    'Tx': tx,
+                    'T5': t5,
+                    'h1': list(map(to_kvalues, h1)),
+                    'h5': list(map(to_kvalues, h5)),
+                    'h6': list(map(to_kvalues, h6)),
+                    's1': list(map(to_kvalues, s1)),
+                    's6': list(map(to_kvalues, s6)),
                     'qx': list(map(to_kvalues, qx)),
                     'l_compr': list(map(to_kvalues, l_compr)),
                     'refr_coef': list(map(to_4_digits, refr_coef)),
                     'refr_coef_carno': to_4_digits(refr_coef_carno),
                     'therm_degree': list(map(to_4_digits, therm_degree))}
-        except ValueError as e:
+        except ValueError as ex:
             print('Проверьте верность введённых данных')
-            print('Текст ошибки: ', e)
+            print(ex)
 
 
 def throttling_prerefr_refr():
@@ -120,6 +130,11 @@ def throttling_prerefr_refr():
             p1 = int(input("Введите первое давление нагн. [бар]: "))
             p2 = int(input("Введите второе давление нагн. [бар]: "))
             tx = int(input('Введите Tx для вашего варианта [K]: '))
+            if fluid == 'Argon' and tx < 83.706:
+                print('Температурный уровень для данного вещества слишком низкий,'
+                      'необходимо использовать вещество, с меньшей температурой кипения'
+                      'при данном давлении')
+                break
             p = {'p1': p1*10**5, 'p2': p2*10**5}
             p_in = CP.PropsSI('P', "T", tx, 'Q', 0, fluid)
             t3 = t_pre
@@ -163,9 +178,9 @@ def throttling_prerefr_refr():
                     'refr_coef [-]': list(map(to_4_digits, refr_coef)),
                     'l_pre [кДж]': list(map(to_kvalues, l_pre)),
                     'eta_T [-]': list(map(to_4_digits, eta_t))}
-        except Exception as e:
+        except Exception as ex:
             print('Проверьте верность введённых данных')
-            traceback.print_exception(e)
+            print(ex)
 
 
 def throttling_prerefr_liq():
@@ -231,9 +246,9 @@ def throttling_prerefr_liq():
                     'x [-]': list(map(to_4_digits, x)),
                     'l_pre [кДж]': list(map(to_kvalues, l_pre)),
                     'eta_T [-]': list(map(to_4_digits, eta_t))}
-        except Exception as e:
+        except Exception as ex:
             print('Проверьте верность введённых данных')
-            traceback.print_exception(e)
+            print(ex)
 
 
 def double_throttling_liq():
@@ -295,9 +310,9 @@ def double_throttling_liq():
                     'l_min [кДж]': list(map(to_kvalues, l_min)),
                     'Ne0 [кДж]': list(map(to_kvalues, ne0)),
                     'eta_T [-]': list(map(to_4_digits, eta_t))}
-        except Exception as e:
+        except Exception as ex:
             print('Проверьте верность введённых данных')
-            traceback.print_exception(e)
+            print(ex)
 
 
 def double_throttling_refr():
@@ -308,6 +323,11 @@ def double_throttling_refr():
             p2 = int(input("Введите второе давление нагн. [бар]: "))
             pd = int(input("Введите промежуточное давление [бар]: "))
             tx = int(input('Введите Tx для вашего варианта [К]: '))
+            if fluid == 'Argon' and tx < 83.706:
+                print('Температурный уровень для данного вещества слишком низкий,'
+                      'необходимо использовать вещество, с меньшей температурой кипения'
+                      'при данном давлении')
+                break
             d = float(input('Введите долю промежуточного потока: '))
             p = {'p1': p1*10**5, 'p2': p2*10**5}
             p_in = CP.PropsSI('P', "T", tx, 'Q', 1, fluid)
@@ -346,9 +366,9 @@ def double_throttling_refr():
                     'refr_coef_carno [кДж]': to_4_digits(refr_coef_carno),
                     'refr_coef [кДж]': list(map(to_4_digits, refr_coef)),
                     'eta_T [-]': list(map(to_4_digits, eta_t))}
-        except Exception as e:
+        except Exception as ex:
             print('Проверьте верность введённых данных')
-            traceback.print_exception(e)
+            print(ex)
 
 
 def steam_compression_cycle():
@@ -372,25 +392,25 @@ def steam_compression_cycle():
             t1_sc = CP.PropsSI("T", "P", p1, 'S', s4, fluid)
             q_refr = h4 - h3
             l_compr = h1 - h4
-            ne0 = q_refr/l_compr
+            refr_coef = q_refr/l_compr
             refr_coef_carno = t4/(t2-t4)
-            therm_degree = ne0/refr_coef_carno
+            therm_degree = refr_coef/refr_coef_carno
             return {"p1": round(p1/10**5, 3),  # bar
                     "p2": round(p2/10**5, 3),   # bar
-                    'T_con': temp_con,  # K
-                    'T_ev': temp_ev,  # K
+                    'temp_con': temp_con,  # K
+                    'temp_ev': temp_ev,  # K
                     "h1": to_kvalues(h1),  # KJ/kg
                     "h2": to_kvalues(h2),  # KJ/kg
                     "h3": to_kvalues(h3),  # KJ/kg
                     "h4": to_kvalues(h4),  # KJ/kg
-                    "T1": t1_sc,  # K
+                    "T1": round(t1_sc),  # K
                     "T2": t2,  # K
                     "T3": t3,  # K
                     "T4": t4,  # K
                     'fluid': fluid,
                     'q_refr': to_kvalues(q_refr),  # KJ/kg
                     'l_compr': to_kvalues(l_compr),  # KJ/kg
-                    'Ne0': round(ne0, 3),
+                    'refr_coef': round(refr_coef, 3),
                     'refr_coef_carno': round(refr_coef_carno, 3),  # [-]
                     'therm_degree': round(therm_degree, 3)}  # [-]
         except Exception as ex:
@@ -398,12 +418,12 @@ def steam_compression_cycle():
 
 
 if __name__ == '__main__':
-    # answer = simple_throttling_liq()
-    answer = simple_throttling_refr()
+    answer = simple_throttling_liq()
+    # answer = simple_throttling_refr()
     # answer = throttling_prerefr_liq()
-    # answer = throttling_prerefr_refr()
+    # answer = throttling_prerefr_refr() тут ошибка с аргоном
     # answer = double_throttling_liq()
+    # answer = double_throttling_refr() тут ошибка с аргоном
     # answer = steam_compression_cycle()
-    # answer = double_throttling_refr()
     for variable, value in answer.items():
         print(f"{variable} --- {value}")
