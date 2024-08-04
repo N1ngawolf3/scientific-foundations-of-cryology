@@ -1,9 +1,8 @@
 import CoolProp.CoolProp as CP
-import traceback
 from config import sat_liquid, sat_vapor, qoc, t1, eta_isot, t_ned, t_pre, ql
 from math import log
 
-# aa
+
 def to_kvalues(kvalue):
     return round(kvalue/1000, 3)
 
@@ -12,8 +11,7 @@ def to_4_digits(decimal_value):
     return round(decimal_value, 4)
 
 
-
-#Добавить БД для сохранения решённых задач, фамилий, варианта и тд и тп
+# Добавить БД SQLite? для сохранения решённых задач, фамилий, варианта и тд и тп
 
 
 def simple_throttling_liq():
@@ -56,6 +54,13 @@ def simple_throttling_liq():
                 ne0.append(ne0_temp)
                 therm_degree.append(l_min_temp/ne0_temp)
             return {'fluid': fluid,
+                    'h1': list(map(to_kvalues, h1)),
+                    's1': list(map(to_kvalues, s1)),
+                    'h5': list(map(to_kvalues, h5)),
+                    'h6': list(map(to_kvalues, h6)),
+                    's6': list(map(to_kvalues, s6)),
+                    's_liq': list(map(to_kvalues, s_liq)),
+                    'h_liq': list(map(to_kvalues, h_liq)),
                     'x': list(map(to_4_digits, x)),
                     'l_compr': list(map(to_kvalues, l_compr)),
                     'Ne0': list(map(to_kvalues, ne0)),
@@ -103,8 +108,7 @@ def simple_throttling_refr():
                 refr_coef.append(refr_coef_temp)
                 therm_degree.append(refr_coef_temp/refr_coef_carno)
             return {'fluid': fluid,
-                    'p1': p['p1']/(10 ** 5),
-                    'p2': p['p2']/(10 ** 5),
+                    'p': [p['p1']/(10 ** 5), p['p2']/(10 ** 5)],
                     'T1': t1,
                     'Tx': tx,
                     'T5': t5,
@@ -175,9 +179,10 @@ def throttling_prerefr_refr():
                     'qx [кДж]': list(map(to_kvalues, qx)),
                     'l_compr [кДж]': list(map(to_kvalues, l_compr)),
                     'l [кДж]': list(map(to_kvalues, l)),
+                    'refr_coef_carno': list(map(to_4_digits, l)),
                     'refr_coef [-]': list(map(to_4_digits, refr_coef)),
                     'l_pre [кДж]': list(map(to_kvalues, l_pre)),
-                    'eta_T [-]': list(map(to_4_digits, eta_t))}
+                    'therm_degree [-]': list(map(to_4_digits, eta_t))}
         except Exception as ex:
             print('Проверьте верность введённых данных')
             print(ex)
