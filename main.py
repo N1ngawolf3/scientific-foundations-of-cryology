@@ -54,6 +54,10 @@ def simple_throttling_liq():
                 ne0.append(ne0_temp)
                 therm_degree.append(l_min_temp/ne0_temp)
             return {'fluid': fluid,
+                    'p': [p['p1'] / (10 ** 5), p['p2'] / (10 ** 5)],
+                    'p_in': to_kvalues(p_in),
+                    'T1': t1,
+                    'T5': t5,
                     'h1': list(map(to_kvalues, h1)),
                     's1': list(map(to_kvalues, s1)),
                     'h5': list(map(to_kvalues, h5)),
@@ -77,8 +81,13 @@ def simple_throttling_refr():
             fluid = input('Введите рабочее тело:  ')
             p1 = int(input("Введите первое давление нагн. [бар]: "))
             p2 = int(input("Введите второе давление нагн. [бар]: "))
-            p = {'p1': p1*10**5, 'p2': p2*10**5}
             tx = int(input('Введите Tx для вашего варианта [K]: '))
+            p = {'p1': p1*10**5, 'p2': p2*10**5}
+            if fluid == 'Argon' and tx < 83.706:
+                return {'fluid': fluid,
+                        'p': [p['p1'] / (10 ** 5), p['p2'] / (10 ** 5)],
+                        'T1': t1,
+                        'argon_error': 'argon_error'}
             p_in = CP.PropsSI('P', 'T', tx, 'Q', 0, fluid)
             t3 = tx
             t4 = t3
@@ -134,12 +143,12 @@ def throttling_prerefr_refr():
             p1 = int(input("Введите первое давление нагн. [бар]: "))
             p2 = int(input("Введите второе давление нагн. [бар]: "))
             tx = int(input('Введите Tx для вашего варианта [K]: '))
+            p = {'p1': p1 * 10 ** 5, 'p2': p2 * 10 ** 5}
             if fluid == 'Argon' and tx < 83.706:
-                print('Температурный уровень для данного вещества слишком низкий,'
-                      'необходимо использовать вещество, с меньшей температурой кипения'
-                      'при данном давлении')
-                break
-            p = {'p1': p1*10**5, 'p2': p2*10**5}
+                return {'fluid': fluid,
+                        'p': [p['p1'] / (10 ** 5), p['p2'] / (10 ** 5)],
+                        'T1': t1,
+                        'argon_error': 'argon_error'}
             p_in = CP.PropsSI('P', "T", tx, 'Q', 0, fluid)
             t3 = t_pre
             t7 = t_pre - t_ned
@@ -171,18 +180,32 @@ def throttling_prerefr_refr():
                 refr_coef_temp = qx_temp/l_temp
                 eta_t_temp = refr_coef_temp/refr_coef_carno[0]
                 qx.append(qx_temp)
+                l.append(l_temp)
                 l_compr.append(l_compr_temp)
                 l_pre.append(l_pre_temp)
                 refr_coef.append(refr_coef_temp)
                 eta_t.append(eta_t_temp)
             return {'fluid': fluid,
-                    'qx [кДж]': list(map(to_kvalues, qx)),
-                    'l_compr [кДж]': list(map(to_kvalues, l_compr)),
-                    'l [кДж]': list(map(to_kvalues, l)),
-                    'refr_coef_carno': list(map(to_4_digits, l)),
-                    'refr_coef [-]': list(map(to_4_digits, refr_coef)),
-                    'l_pre [кДж]': list(map(to_kvalues, l_pre)),
-                    'therm_degree [-]': list(map(to_4_digits, eta_t))}
+                    'p': [p['p1']/(10 ** 5), p['p2']/(10 ** 5)],
+                    'Tx': tx,
+                    'h1': list(map(to_kvalues, h1)),
+                    'T1': t1,
+                    'T_pre': t_pre,
+                    'T3': t3,
+                    'T7': t7,
+                    'T8': t8,
+                    's1': list(map(to_kvalues, s1)),
+                    'h3': list(map(to_kvalues, h3)),
+                    'h7': list(map(to_kvalues, h7)),
+                    'h8': list(map(to_kvalues, h8)),
+                    's8': list(map(to_kvalues, s8)),
+                    'qx': list(map(to_kvalues, qx)),
+                    'l_compr': list(map(to_kvalues, l_compr)),
+                    'l': list(map(to_kvalues, l)),
+                    'l_pre': list(map(to_kvalues, l_pre)),
+                    'refr_coef_carno': list(map(to_4_digits, refr_coef_carno)),
+                    'refr_coef': list(map(to_4_digits, refr_coef)),
+                    'therm_degree': list(map(to_4_digits, eta_t))}
         except Exception as ex:
             print('Проверьте верность введённых данных')
             print(ex)
@@ -215,7 +238,6 @@ def throttling_prerefr_liq():
             s_liq = CP.PropsSI('S', "P", p_in*10**5, 'Q', sat_liquid, fluid)
             qx = []
             l_compr = []
-            l_compr_iz = []
             l = []
             l_min = []
             ne0 = []
@@ -224,8 +246,7 @@ def throttling_prerefr_liq():
             eta_t = []
             for i in range(2):
                 qx_temp = h7[i] - h3[i] - qoc
-                l_compr_temp_iz = (t1*(s9[i] - s1[i]) - (h9[i] - h1[i]))
-                l_compr_temp = l_compr_temp_iz/eta_isot
+                l_compr_temp = (t1*(s9[i] - s1[i]) - (h9[i] - h1[i]))/eta_isot
                 l_pre_temp = qx_temp/ql
                 l_temp = l_compr_temp + l_pre_temp
                 x_temp = ((h7[i] - h3[i])-qoc)/(h7[i] - h_liq)
@@ -234,7 +255,6 @@ def throttling_prerefr_liq():
                 eta_t_temp = l_min_temp/ne0_temp
                 qx.append(qx_temp)
                 l_compr.append(l_compr_temp)
-                l_compr_iz.append(l_compr_temp_iz)
                 l.append(l_temp)
                 l_min.append(l_min_temp)
                 ne0.append(ne0_temp)
@@ -242,17 +262,32 @@ def throttling_prerefr_liq():
                 l_pre.append(l_pre_temp)
                 eta_t.append(eta_t_temp)
             return {'fluid': fluid,
-                    'qx [кДж]': list(map(to_kvalues, qx)),
-                    'l_compr [кДж]': list(map(to_kvalues, l_compr)),
-                    'l_compr_iz [кДж]': list(map(to_kvalues, l_compr_iz)),
-                    'l [кДж]': list(map(to_kvalues, l)),
-                    'l_min [кДж]': list(map(to_kvalues, l_min)),
-                    'Ne0 [кДж]': list(map(to_kvalues, ne0)),
-                    'x [-]': list(map(to_4_digits, x)),
-                    'l_pre [кДж]': list(map(to_kvalues, l_pre)),
-                    'eta_T [-]': list(map(to_4_digits, eta_t))}
+                    'p_in': to_kvalues(p_in),
+                    'p': [p['p1'] / (10 ** 5), p['p2'] / (10 ** 5)],
+                    'h1': list(map(to_kvalues, h1)),
+                    's1': list(map(to_kvalues, s1)),
+                    'h3': list(map(to_kvalues, h3)),
+                    'h7': list(map(to_kvalues, h7)),
+                    'h9': list(map(to_kvalues, h9)),
+                    's9': list(map(to_kvalues, s9)),
+                    'hж': to_kvalues(h_liq),
+                    'sж': to_kvalues(s_liq),
+                    'T1': t1,
+                    'T_pre': t_pre,
+                    'T3': t3,
+                    'T7': t7,
+                    'T9': t9,
+                    'qx': list(map(to_kvalues, qx)),
+                    'l_pre': list(map(to_kvalues, l_pre)),
+                    'l_compr': list(map(to_kvalues, l_compr)),
+                    'l': list(map(to_kvalues, l)),
+                    'x': list(map(to_4_digits, x)),
+                    'l_min': list(map(to_kvalues, l_min)),
+                    'Ne0': list(map(to_kvalues, ne0)),
+                    'therm_degree': list(map(to_4_digits, eta_t))}
         except Exception as ex:
             print('Проверьте верность введённых данных')
+            # traceback.print_exc(file=sys.stdout)
             print(ex)
 
 
@@ -265,8 +300,8 @@ def double_throttling_liq():
             pd = int(input("Введите промежуточное давление [бар]: "))
             p_in = float(input('Введите давление вс. [бар]:  '))
             d = float(input('Введите долю промежуточного потока:  '))
-            p = {'p1': p1*10**5, 'p2': p2*10**5}
             r = float(input('Введите газовую постоянную [Дж/кг*К]: '))
+            p = {'p1': p1*10**5, 'p2': p2*10**5}
             t7 = t1 - t_ned
             t9 = t1 - t_ned
             h1 = [CP.PropsSI("H", "P", p['p1'], 'T', t1, fluid),
@@ -303,18 +338,36 @@ def double_throttling_liq():
                 l_compr_temp = l_compr_temp_2 + l_compr_temp_1
                 ne0_temp = l_compr_temp/x_temp
                 l_min_temp = t1 * (s1_i[i] - s_liq[i]) - (h1_i[i] - h_liq[i])
-                eta_t_temp = l_min_temp/ne0_temp
+                eta_t_temp = l_min_temp/(ne0_temp*1000)
                 x.append(x_temp)
                 l_compr.append(l_compr_temp)
                 ne0.append(ne0_temp)
                 eta_t.append(eta_t_temp)
                 l_min.append(l_min_temp)
             return {'fluid': fluid,
-                    'x [-]': list(map(to_4_digits, x)),
-                    'l_compr [кДж]': list(map(to_kvalues, l_compr)),
-                    'l_min [кДж]': list(map(to_kvalues, l_min)),
-                    'Ne0 [кДж]': list(map(to_kvalues, ne0)),
-                    'eta_T [-]': list(map(to_4_digits, eta_t))}
+                    'p_in': to_kvalues(p_in),
+                    'p': [p['p1'] / (10 ** 5), p['p2'] / (10 ** 5)],
+                    'pD': pd,
+                    'D': d,
+                    'R': r,
+                    'h1': list(map(to_kvalues, h1)),
+                    's1_I': list(map(to_kvalues, s1_i)),
+                    "h1_I": list(map(to_kvalues, h1_i)),
+                    "h1_II": list(map(to_kvalues, h1_ii)),
+                    "delta_hT1": list(map(to_kvalues, delta_ht1)),
+                    "delta_hT2": list(map(to_kvalues, delta_ht2)),
+                    "Cp7": list(map(to_kvalues, c_p7)),
+                    "Cp9": list(map(to_kvalues, c_p9)),
+                    'h7': list(map(to_kvalues, h7)),
+                    'hж': list(map(to_kvalues, h_liq)),
+                    'sж': list(map(to_kvalues, s_liq)),
+                    'T1': t1,
+                    'T7': t7,
+                    'x': list(map(to_4_digits, x)),
+                    'l_compr': list(map(to_4_digits, l_compr)),
+                    'Ne0': list(map(to_kvalues, ne0)),
+                    'l_min': list(map(to_kvalues, l_min)),
+                    'therm_degree': list(map(to_4_digits, eta_t))}
         except Exception as ex:
             print('Проверьте верность введённых данных')
             print(ex)
@@ -328,13 +381,15 @@ def double_throttling_refr():
             p2 = int(input("Введите второе давление нагн. [бар]: "))
             pd = int(input("Введите промежуточное давление [бар]: "))
             tx = int(input('Введите Tx для вашего варианта [К]: '))
-            if fluid == 'Argon' and tx < 83.706:
-                print('Температурный уровень для данного вещества слишком низкий,'
-                      'необходимо использовать вещество, с меньшей температурой кипения'
-                      'при данном давлении')
-                break
             d = float(input('Введите долю промежуточного потока: '))
             p = {'p1': p1*10**5, 'p2': p2*10**5}
+            if fluid == 'Argon' and tx < 83.706:
+                return {'fluid': fluid,
+                        'p': [p['p1'] / (10 ** 5), p['p2'] / (10 ** 5)],
+                        'pD': pd,
+                        'D': d,
+                        'T1': t1,
+                        'argon_error': 'argon_error'}
             p_in = CP.PropsSI('P', "T", tx, 'Q', 1, fluid)
             t5 = tx
             t6 = t5
@@ -366,11 +421,23 @@ def double_throttling_refr():
                 refr_coef.append(refr_coef_temp)
                 eta_t.append(refr_coef_temp/refr_coef_carno)
             return {'fluid': fluid,
-                    'qx [кДж]': list(map(to_kvalues, qx)),
-                    'l_compr [кДж]': list(map(to_kvalues, l_compr)),
-                    'refr_coef_carno [кДж]': to_4_digits(refr_coef_carno),
-                    'refr_coef [кДж]': list(map(to_4_digits, refr_coef)),
-                    'eta_T [-]': list(map(to_4_digits, eta_t))}
+                    'p': [p['p1'] / (10 ** 5), p['p2'] / (10 ** 5)],
+                    'pD': pd,  # K
+                    'D': d,  # K
+                    "h1": list(map(to_kvalues, h1)),
+                    "s1": list(map(to_kvalues, s1)),
+                    "h9": list(map(to_kvalues, h9)),
+                    "s9": list(map(to_kvalues, s9)),
+                    "h7": list(map(to_kvalues, h7)),
+                    "T1": t1,
+                    "Tx": tx,
+                    "T7": t7,
+                    "T9": t9,
+                    'qx': list(map(to_kvalues, qx)),
+                    'l_compr': list(map(to_kvalues, l_compr)),
+                    'refr_coef': list(map(to_4_digits, refr_coef)),
+                    'refr_coef_carno': to_4_digits(refr_coef_carno),
+                    'therm_degree': list(map(to_4_digits, eta_t))}
         except Exception as ex:
             print('Проверьте верность введённых данных')
             print(ex)
@@ -400,8 +467,9 @@ def steam_compression_cycle():
             refr_coef = q_refr/l_compr
             refr_coef_carno = t4/(t2-t4)
             therm_degree = refr_coef/refr_coef_carno
-            return {"p1": round(p1/10**5, 3),  # bar
-                    "p2": round(p2/10**5, 3),   # bar
+            return {"p": [round(p1/10**5, 3), round(p2/10**5, 3)],  # bar
+                    "p_in": '',   # bar
+                    "x": [0, ],   # bar
                     'temp_con': temp_con,  # K
                     'temp_ev': temp_ev,  # K
                     "h1": to_kvalues(h1),  # KJ/kg
@@ -423,12 +491,13 @@ def steam_compression_cycle():
 
 
 if __name__ == '__main__':
-    answer = simple_throttling_liq()
+    # answer = simple_throttling_liq()
     # answer = simple_throttling_refr()
     # answer = throttling_prerefr_liq()
     # answer = throttling_prerefr_refr() тут ошибка с аргоном
     # answer = double_throttling_liq()
     # answer = double_throttling_refr() тут ошибка с аргоном
     # answer = steam_compression_cycle()
-    for variable, value in answer.items():
-        print(f"{variable} --- {value}")
+    # for variable, value in answer.items():
+    #     print(f"{variable} --- {value}")
+    pass

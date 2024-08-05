@@ -1,0 +1,16 @@
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<p style="text-align: center;"><strong>Цикл двойного дросселирования</strong></p>
+<p style="text-align: center;"><strong>Рефрижераторный режим</strong></p>
+<p style="text-align: left;">Дано: {{fluid}}&nbsp; p2 = {{p}}·10<sup>5</sup> Па&nbsp; pD = {{pD}}·10<sup>5</sup> Па &nbsp;D = {{D}}  T1 = {{T1}} К</p>
+<p style="text-align: center;"><strong>Решение</strong></p>
+<p style="text-align: left;">h1 = {{h1}} КДж/кг&nbsp; s1 = {{s1}} КДж/кг·K</p>
+<p style="text-align: left;">T9 = T1 - &Delta;Tн = {{T9}} К h9 = {{h9}} КДж/кг&nbsp; s9 = {{s9}} КДж/кг·K</p>
+<p style="text-align: left;">T7 = T9 = {{T7}} K h7 = {{h7}} КДж/кг&nbsp;</p>
+<p style="text-align: left;">T6 = Tx = {{Tx}} K
+<p style="text-align: left;">Полезная холодопроизводительность: qx = h7 - h1 - D·(h7 - h9) - qoc = {{qx}} КДж/кг</p>
+<p style="text-align: left;">Работа сжатия:</p>
+   <p style="text-align: left;"> lсж = (T1·(s9-s1)-(h9-h1))/&eta;из + ((1 - D)·T1·(s9-s1)-(h9-h1))/&eta;из= {{l_compr}} КДж/кг</p>
+<p style="text-align: left;">Холодильный коэффициент: &epsilon; = qx/lсж = {{refr_coef}}</p>
+<p style="text-align: left;">Холодильный коэффициент цикла Карно: &epsilon;k = T6/(T1 - T6) = {{refr_coef_carno}}</p>
+<p style="text-align: left;">Степень термодинамического совершенствования: &eta;T = &epsilon;/&epsilon;k = {{therm_degree}}</p>
+<img alt="" src="data:image/png;base64,{{image_cycle}} " width="400" height="600" />

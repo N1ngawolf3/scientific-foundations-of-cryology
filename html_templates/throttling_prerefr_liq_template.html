@@ -1,18 +1,19 @@
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 <p style="text-align: center;"><strong>Дроссельный цикл с ПО</strong></p>
-<p style="text-align: center;"><strong>Рефрижераторный режим</strong></p>
+<p style="text-align: center;"><strong>Ожижительный режим</strong></p>
 <p style="text-align: left;">Дано: {{fluid}}&nbsp; p2 = {{p}}·10<sup>5</sup> Па&nbsp; &nbsp;T1 = {{T1}} К</p>
 <p style="text-align: center;"><strong>Решение</strong></p>
 <p style="text-align: left;">h1 = {{h1}} КДж/кг&nbsp; s1 = {{s1}} КДж/кг·K</p>
-<p style="text-align: left;">T9 = T1 &nbsp;</p>
 <p style="text-align: left;">T3 = Tпо = {{T_pre}} K&nbsp; h3 = {{h3}} КДж/кг</p>
 <p style="text-align: left;">T7 = Tпо - &Delta;Tн = {{T7}} K h7 = {{h7}} КДж/кг&nbsp; </p>
-<p style="text-align: left;">T8 = T1 -&Delta;Tн = {{T8}} К h8 = {{h8}} КДж/кг&nbsp; s8 = {{s8}} КДж/кг·K</p>
+<p style="text-align: left;">T9 = T1 = {{T9}} К h9 = {{h9}} КДж/кг&nbsp; s9 = {{s9}} КДж/кг·K</p>
+<p style="text-align: left;">hж = {{hж}} КДж/кг sж = {{sж}} КДж/кг·K&nbsp;</p>
 <p style="text-align: left;">Полезная холодопроизводительность: qx = h7 - h3 - qoc = {{qx}} КДж/кг</p>
 <p style="text-align: left;">Работа ПО: lпо = qx/ql = {{l_pre}} КДж/кг</p>
-<p style="text-align: left;">Затр. работа на сжатие в компр.: lсж = (T1·(s6-s1)-(h6-h1))/&eta;из = {{l_compr}} КДж/кг
+<p style="text-align: left;">Затр. работа на сжатие в компр.: lсж = (T1·(s9-s1)-(h9-h1))/&eta;из = {{l_compr}} КДж/кг
 <p style="text-align: left;">Затр. работа : l = lсж + lпо = {{l}} КДж/кг</p>
-<p style="text-align: left;">Холодильный коэффициент: &epsilon; = qx/l = {{refr_coef}}</p>
-<p style="text-align: left;">Холодильный коэффициент цикла Карно: &epsilon;k = Tx/(T1 - Tx) = {{refr_coef_carno}}
-<p style="text-align: left;">Степень термодинамического совершенствования: &eta;T = &epsilon;/&epsilon;k = {{therm_degree}}
+<p style="text-align: left;">Kоэффициент ожижения: x = (h7 - h3 - qoc )/(h7-hж) = {{x}}</p>
+<p style="text-align: left;">Затраты работы на ед. ж: Ne0 = l/х = {{Ne0}} кДж/кг_жидкости</p>
+<p style="text-align: left;">Минимальная работа: lmin =(T1·(s9-sж)-(h9-hж)) = {{l_min}} КДж/кг </p>
+<p style="text-align: left;">Степень термодинамического совершенствования: &eta;T = lmin/Ne0 = {{therm_degree}}</p>
 <img alt="" src="data:image/png;base64,{{image_cycle}} " width="700" height="500" />

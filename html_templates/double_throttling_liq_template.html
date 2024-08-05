@@ -1,0 +1,21 @@
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<p style="text-align: center;"><strong>Цикл двойного дросселирования</strong></p>
+<p style="text-align: center;"><strong>Ожижительный режим</strong></p>
+<p style="text-align: left;">Дано: {{fluid}}&nbsp; p2 = {{p}}·10<sup>5</sup> Па&nbsp; pD = {{pD}}·10<sup>5</sup> Па &nbsp;D = {{D}}  T1 = {{T1}} К
+R = {{R}}  КДж/кг·K</p>
+<p style="text-align: center;"><strong>Решение</strong></p>
+<p style="text-align: left;">h1 = {{h1}} КДж/кг&nbsp;h1&#8242; = {{h1_I}} КДж/кг</p>
+<p style="text-align: left;">h1&#8242;&#8242; = {{h1_II}}  КДж/кг s1&#8242; = {{s1_I}} КДж/кг·K</p>
+<p style="text-align: left;"> hж = {{hж}}  КДж/кг sж = {{sж}}  КДж/кг·K</p>
+<p style="text-align: left;"> &Delta;hT1 = h1&#8242; - h1 = {{delta_hT1}}  КДж/кг</p>
+<p style="text-align: left;"> &Delta;hT2 = h1&#8242; - h1&#8242;&#8242; = {{delta_hT2}}  КДж/кг</p>
+<p style="text-align: left;"> Cp7 = {{Cp7}} КДж/кг·K Cp9 = {{Cp9}} КДж/кг·K</p>
+<p style="text-align: left;">T7 = T1 -  &Delta;Tн = {{T7}} K h7 = {{h7}} КДж/кг&nbsp;</p>
+<p style="text-align: left;">Коэффициент ожижения:</p>
+<p style="text-align: left;"> x = (&Delta;hT1 - D·&Delta;hT2 - (Cp7·&Delta;Tн - D·Cp9·&Delta;Tн)-qoc)/(h7-Cp7·&Delta;Tн-hж) = {{x}}</p>
+<p style="text-align: left;">Работа сжатия:</p>
+   <p style="text-align: left;"> lсж = ((1 - D)·R*T1*ln(pD/p1)/&eta;из + (R*T1*ln(p2/p1)/&eta;из= {{l_compr}} КДж/кг</p>
+<p style="text-align: left;">Затраты работы на ед. ж: Ne0 = lсж/х = {{Ne0}} кДж/кг_жидкости</p>
+<p style="text-align: left;">Минимальная работа: lmin =T1·(s1&#8242;-sж)-(h1&#8242;-hж) = {{l_min}} КДж/кг</p>
+<p style="text-align: left;">Степень термодинамического совершенства: &eta;T = lmin/Ne0 = {{therm_degree}}</p>
+<img alt="" src="data:image/png;base64,{{image}} " width="300" height="500" />
