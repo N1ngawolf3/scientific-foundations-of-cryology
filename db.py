@@ -48,19 +48,6 @@ if __name__ == '__main__':
     Tev INTEGER
     )
     ''')
-    # action = input(f'Выберите действие из списка: {list(db_actions.keys())}\n'
-    #                f'Введите действие (для завершения оставьте поле пустым): ')
-    # while action != '':
-    #     try:
-    #         db_actions[action]()
-    #         action = input(f'Выберите действие из списка: {list(db_actions.keys())}\n'
-    #                        f'Введите действие (для завершения оставьте поле пустым): ')
-    #     except KeyError:
-    #         print('Видимо вы ввели что-то не так, попробуйте ещё раз')
-    #         action = input(f'Выберите действие из списка: {list(db_actions.keys())}\n'
-    #                        f'Введите действие (для завершения оставьте поле пустым): ')
-    #     except TypeError:
-    #         print('Данное действие не предусмотрено')
     connection.commit()
     connection.close()
 

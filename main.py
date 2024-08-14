@@ -443,51 +443,54 @@ def double_throttling_refr():
             print(ex)
 
 
-def steam_compression_cycle():
+def steam_compression_cycle(fluid=None, temp_con=None, temp_ev=None):
     while True:
         try:
-            fluid = input('Введите хладагент: ')
-            temp_con = int(input('Введите температуру конденсации в '
-                                 '[C]: ')) + 273  # K
-            temp_ev = int(input('Введите температуру испарение в '
-                                '[C]: ')) + 273  # K
-            t2 = temp_con
-            t3 = temp_ev
-            t4 = t3
-            p1 = CP.PropsSI('P', "T", temp_con, 'Q', sat_vapor, fluid)
-            p2 = CP.PropsSI('P', "T", temp_ev, 'Q', sat_liquid, fluid)
-            s4 = CP.PropsSI('S', "T", t4, 'Q', sat_vapor, fluid)
-            h1 = CP.PropsSI("H", "P", p1, 'S', s4, fluid)
-            h2 = CP.PropsSI("H", "T", temp_con, 'Q', sat_liquid, fluid)
-            h3 = h2
-            h4 = CP.PropsSI("H", "P", p2, 'Q', sat_vapor, fluid)
-            t1_sc = CP.PropsSI("T", "P", p1, 'S', s4, fluid)
-            q_refr = h4 - h3
-            l_compr = h1 - h4
-            refr_coef = q_refr/l_compr
-            refr_coef_carno = t4/(t2-t4)
-            therm_degree = refr_coef/refr_coef_carno
-            return {"p": [round(p1/10**5, 3), round(p2/10**5, 3)],  # bar
-                    "p_in": '',   # bar
-                    "x": [0, ],   # bar
-                    'temp_con': temp_con,  # K
-                    'temp_ev': temp_ev,  # K
-                    "h1": to_kvalues(h1),  # KJ/kg
-                    "h2": to_kvalues(h2),  # KJ/kg
-                    "h3": to_kvalues(h3),  # KJ/kg
-                    "h4": to_kvalues(h4),  # KJ/kg
-                    "T1": round(t1_sc),  # K
-                    "T2": t2,  # K
-                    "T3": t3,  # K
-                    "T4": t4,  # K
-                    'fluid': fluid,
-                    'q_refr': to_kvalues(q_refr),  # KJ/kg
-                    'l_compr': to_kvalues(l_compr),  # KJ/kg
-                    'refr_coef': round(refr_coef, 3),
-                    'refr_coef_carno': round(refr_coef_carno, 3),  # [-]
-                    'therm_degree': round(therm_degree, 3)}  # [-]
+            if fluid is None:
+                fluid = input('Введите хладагент: ')
+                temp_con = int(input('Введите температуру конденсации в '
+                                     '[C]: ')) + 273  # K
+                temp_ev = int(input('Введите температуру испарение в '
+                                    '[C]: ')) + 273  # K
+            else:
+                t2 = temp_con
+                t3 = temp_ev
+                t4 = t3
+                p1 = CP.PropsSI('P', "T", temp_con, 'Q', sat_vapor, fluid)
+                p2 = CP.PropsSI('P', "T", temp_ev, 'Q', sat_liquid, fluid)
+                s4 = CP.PropsSI('S', "T", t4, 'Q', sat_vapor, fluid)
+                h1 = CP.PropsSI("H", "P", p1, 'S', s4, fluid)
+                h2 = CP.PropsSI("H", "T", temp_con, 'Q', sat_liquid, fluid)
+                h3 = h2
+                h4 = CP.PropsSI("H", "P", p2, 'Q', sat_vapor, fluid)
+                t1_sc = CP.PropsSI("T", "P", p1, 'S', s4, fluid)
+                q_refr = h4 - h3
+                l_compr = h1 - h4
+                refr_coef = q_refr/l_compr
+                refr_coef_carno = t4/(t2-t4)
+                therm_degree = refr_coef/refr_coef_carno
+                return {"p": [round(p1/10**5, 3), round(p2/10**5, 3)],  # bar
+                        "p_in": '',   # bar
+                        "x": [0, ],   # bar
+                        'Tcon': temp_con,  # K
+                        'Tev': temp_ev,  # K
+                        "h1": to_kvalues(h1),  # KJ/kg
+                        "h2": to_kvalues(h2),  # KJ/kg
+                        "h3": to_kvalues(h3),  # KJ/kg
+                        "h4": to_kvalues(h4),  # KJ/kg
+                        "T1": round(t1_sc),  # K
+                        "T2": t2,  # K
+                        "T3": t3,  # K
+                        "T4": t4,  # K
+                        'fluid': fluid,
+                        'q_refr': to_kvalues(q_refr),  # KJ/kg
+                        'l_compr': to_kvalues(l_compr),  # KJ/kg
+                        'refr_coef': round(refr_coef, 3),
+                        'refr_coef_carno': round(refr_coef_carno, 3),  # [-]
+                        'therm_degree': round(therm_degree, 3)}  # [-]
         except Exception as ex:
             print(ex)
+            break
 
 
 if __name__ == '__main__':
@@ -497,7 +500,6 @@ if __name__ == '__main__':
     # answer = throttling_prerefr_refr() тут ошибка с аргоном
     # answer = double_throttling_liq()
     # answer = double_throttling_refr() тут ошибка с аргоном
-    # answer = steam_compression_cycle()
-    # for variable, value in answer.items():
-    #     print(f"{variable} --- {value}")
-    pass
+    answer = steam_compression_cycle()
+    for variable, value in answer.items():
+        print(f"{variable} --- {value}")
