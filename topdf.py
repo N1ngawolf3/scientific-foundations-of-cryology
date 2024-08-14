@@ -14,12 +14,12 @@ funcs = {'ЦПДО': simple_throttling_liq,
          'ПКЦ': steam_compression_cycle
          }
 
-full_funcs_name = ['Цикл простого дросселирования: Ожижительный режим',
-                   'Цикл простого дросселирования: Рефрижераторный режим',
-                   'Дроссельный цикл с предварительный охлаждением: Рефрижераторный режим',
-                   'Дроссельный цикл с предварительный охлаждением: Ожижительный режим',
-                   'Цикл двойного дросселирования: Рефрижераторный режим',
-                   'Цикл двойного дросселирования: Ожижительный режим',
+full_funcs_name = ['Цикл простого дросселирования Ожижительный режим',
+                   'Цикл простого дросселирования Рефрижераторный режим',
+                   'Дроссельный цикл с предварительный охлаждением Рефрижераторный режим',
+                   'Дроссельный цикл с предварительный охлаждением Ожижительный режим',
+                   'Цикл двойного дросселирования Рефрижераторный режим',
+                   'Цикл двойного дросселирования Ожижительный режим',
                    'Парокомпрессионный цикл']
 
 funcs_list = dict(zip(full_funcs_name, funcs.values()))
@@ -65,13 +65,13 @@ def template_gen(context, template_env, func_name):
             return output_text
 
 
-def topdf(func_name, surname, number, context):
+def topdf(func_name, surname, number, context, path):
     context['image_cycle'] = get_graph_image(func_name)
     template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
     output_text = template_gen(context, template_env, funcs_list[func_name].__name__)
     config = pdfkit.configuration(wkhtmltopdf="C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe")
-    pdfkit.from_string(output_text, f'created_pdf/{func_name}_{surname}_{number}.pdf',
+    pdfkit.from_string(output_text, f'{path}/{func_name}_{surname}_{number}.pdf',
                        configuration=config, css='html_templates/style.css')
 
 

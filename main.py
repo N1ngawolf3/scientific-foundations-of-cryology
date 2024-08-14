@@ -14,13 +14,14 @@ def to_4_digits(decimal_value):
 # Добавить БД SQLite? для сохранения решённых задач, фамилий, варианта и тд и тп
 
 
-def simple_throttling_liq():
+def simple_throttling_liq(fluid=None, p1=None, p2=None, p_in=None):
     while True:
         try:
-            fluid = input('Введите рабочее тело:  ')
-            p1 = int(input("Введите первое давление нагн. [бар]: "))
-            p2 = int(input("Введите второе давление нагн. [бар]: "))
-            p_in = float(input('Введите давление вс. [бар]:  '))
+            if fluid is None:
+                fluid = input('Введите рабочее тело:  ')
+                p1 = int(input("Введите первое давление нагн. [бар]: "))
+                p2 = int(input("Введите второе давление нагн. [бар]: "))
+                p_in = float(input('Введите давление вс. [бар]:  '))
             p = {'p1': p1*10**5, 'p2': p2*10**5}
             t5 = t1 - t_ned
             t6 = t1
@@ -55,7 +56,7 @@ def simple_throttling_liq():
                 therm_degree.append(l_min_temp/ne0_temp)
             return {'fluid': fluid,
                     'p': [p['p1'] / (10 ** 5), p['p2'] / (10 ** 5)],
-                    'p_in': to_kvalues(p_in),
+                    'p_in': p_in,
                     'T1': t1,
                     'T5': t5,
                     'h1': list(map(to_kvalues, h1)),
@@ -470,8 +471,6 @@ def steam_compression_cycle(fluid=None, temp_con=None, temp_ev=None):
                 refr_coef_carno = t4/(t2-t4)
                 therm_degree = refr_coef/refr_coef_carno
                 return {"p": [round(p1/10**5, 3), round(p2/10**5, 3)],  # bar
-                        "p_in": '',   # bar
-                        "x": [0, ],   # bar
                         'Tcon': temp_con,  # K
                         'Tev': temp_ev,  # K
                         "h1": to_kvalues(h1),  # KJ/kg
