@@ -2,7 +2,6 @@ import jinja2
 import pdfkit
 from main import *
 import base64
-import traceback
 
 # TODO каким-то хером отследить одно отрицательное, одно положительное значение
 funcs = {'ЦПДО': simple_throttling_liq,

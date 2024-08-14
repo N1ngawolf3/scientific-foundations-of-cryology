@@ -74,7 +74,7 @@ class STLCalcWindow(QDialog):
         topdf(self.cycle_name, surname, number, self.context, path)
 
 
-class SCDialog(QDialog):
+class STLDialog(QDialog):
     def __init__(self, title):
         super().__init__()
         try:
@@ -82,12 +82,101 @@ class SCDialog(QDialog):
             loadUi(f'UI/{self.title}.ui', self)
             self.setWindowTitle(self.title)
             self.pushButton.clicked.connect(self.calculate)
+            self.fluid_comboBox.addItems(['Oxygen','Air','Argon','Nitrogen'])
         except Exception as ex:
             traceback.print_exception(ex)
 
     def calculate(self):
         try:
-            fluid = str(self.fluid_lineEdit.text())
+            fluid = str(self.fluid_comboBox.currentText())
+            p1 = int(self.p1_lineEdit.text())
+            p2 = int(self.p2_lineEdit.text())
+            p_in = float(self.p_in2_lineEdit.text())
+            context = funcs_list[self.title](fluid, p1, p2, p_in)
+            calc_window = STLCalcWindow(self.title, context)
+            calc_window.exec()
+        except Exception as ex:
+            traceback.print_exception(ex)
+            warning = Warning(ex)
+            warning.exec()
+
+class STRDialog(QDialog):
+    def __init__(self, title):
+        super().__init__()
+        try:
+            self.title = title
+            loadUi(f'UI/{self.title}.ui', self)
+            self.setWindowTitle(self.title)
+            # self.pushButton.clicked.connect(self.calculate)
+            self.fluid_comboBox.addItems(['Oxygen','Air','Argon','Nitrogen'])
+        except Exception as ex:
+            traceback.print_exception(ex)
+
+class TPRLDialog(QDialog):
+    def __init__(self, title):
+        super().__init__()
+        try:
+            self.title = title
+            loadUi(f'UI/{self.title}.ui', self)
+            self.setWindowTitle(self.title)
+            self.fluid_comboBox.addItems(['Oxygen', 'Air', 'Argon', 'Nitrogen'])
+            # self.pushButton.clicked.connect(self.calculate)
+        except Exception as ex:
+            traceback.print_exception(ex)
+
+class TPRRDialog(QDialog):
+    def __init__(self, title):
+        super().__init__()
+        try:
+            self.title = title
+            loadUi(f'UI/{self.title}.ui', self)
+            self.setWindowTitle(self.title)
+            self.fluid_comboBox.addItems(['Oxygen', 'Air', 'Argon', 'Nitrogen'])
+            # self.pushButton.clicked.connect(self.calculate)
+        except Exception as ex:
+            traceback.print_exception(ex)
+
+
+class DTLDialog(QDialog):
+    def __init__(self, title):
+        super().__init__()
+        try:
+            self.title = title
+            loadUi(f'UI/{self.title}.ui', self)
+            self.setWindowTitle(self.title)
+            self.fluid_comboBox.addItems(['Oxygen', 'Air', 'Argon', 'Nitrogen'])
+            # self.pushButton.clicked.connect(self.calculate)
+        except Exception as ex:
+            traceback.print_exception(ex)
+
+class DTRDialog(QDialog):
+    def __init__(self, title):
+        super().__init__()
+        try:
+            self.title = title
+            loadUi(f'UI/{self.title}.ui', self)
+            self.setWindowTitle(self.title)
+            self.fluid_comboBox.addItems(['Oxygen', 'Air', 'Argon', 'Nitrogen'])
+            # self.pushButton.clicked.connect(self.calculate)
+        except Exception as ex:
+            traceback.print_exception(ex)
+
+
+class SCDialog(QDialog):
+    def __init__(self, title):
+        super().__init__()
+        try:
+            self.title = title
+            loadUi(f'UI/{self.title}.ui', self)
+            self.setWindowTitle(self.title)
+            self.fluid_comboBox.addItems(['R404a', 'R22', 'R134a'])
+            self.pushButton.clicked.connect(self.calculate)
+        except Exception as ex:
+            traceback.print_exception(ex)
+
+    def calculate(self):
+        try:
+            fluid = str(self.fluid_comboBox.currentText())
             tcon = int(self.Tcon_lineEdit.text()) + 273
             tev = int(self.Tev_lineEdit.text()) + 273
             context = funcs_list[self.title](fluid, tcon, tev)
@@ -99,38 +188,12 @@ class SCDialog(QDialog):
             warning.exec()
 
 
-class STLDialog(QDialog):
-    def __init__(self, title):
-        super().__init__()
-        try:
-            self.title = title
-            loadUi(f'UI/{self.title}.ui', self)
-            self.setWindowTitle(self.title)
-            self.pushButton.clicked.connect(self.calculate)
-        except Exception as ex:
-            traceback.print_exception(ex)
-
-    def calculate(self):
-        try:
-            fluid = str(self.fluid_lineEdit.text())
-            p1 = int(self.p1_lineEdit.text())
-            p2 = int(self.p2_lineEdit.text())
-            p_in = float(self.p_in_lineEdit.text())
-            context = funcs_list[self.title](fluid, p1, p2, p_in)
-            calc_window = STLCalcWindow(self.title, context)
-            calc_window.exec()
-        except Exception as ex:
-            traceback.print_exception(ex)
-            warning = Warning(ex)
-            warning.exec()
-
-
 dialogs = {'Цикл простого дросселирования Ожижительный режим': STLDialog,
-           'Цикл простого дросселирования Рефрижераторный режим': None,
-           'Дроссельный цикл с предварительный охлаждением Рефрижераторный режим': None,
-           'Дроссельный цикл с предварительный охлаждением Ожижительный режим': None,
-           'Цикл двойного дросселирования Рефрижераторный режим': None,
-           'Цикл двойного дросселирования Ожижительный режим': None,
+           'Цикл простого дросселирования Рефрижераторный режим': STRDialog,
+           'Дроссельный цикл с предварительный охлаждением Рефрижераторный режим': TPRRDialog,
+           'Дроссельный цикл с предварительный охлаждением Ожижительный режим': TPRLDialog,
+           'Цикл двойного дросселирования Рефрижераторный режим': DTRDialog,
+           'Цикл двойного дросселирования Ожижительный режим': DTLDialog,
            'Парокомпрессионный цикл': SCDialog}
 
 

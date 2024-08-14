@@ -423,8 +423,8 @@ def double_throttling_refr():
                 eta_t.append(refr_coef_temp/refr_coef_carno)
             return {'fluid': fluid,
                     'p': [p['p1'] / (10 ** 5), p['p2'] / (10 ** 5)],
-                    'pD': pd,  # K
-                    'D': d,  # K
+                    'pD': pd,
+                    'D': d,
                     "h1": list(map(to_kvalues, h1)),
                     "s1": list(map(to_kvalues, s1)),
                     "h9": list(map(to_kvalues, h9)),
@@ -472,7 +472,8 @@ def steam_compression_cycle(fluid=None, temp_con=None, temp_ev=None):
                 therm_degree = refr_coef/refr_coef_carno
                 return {"p": [round(p1/10**5, 3), round(p2/10**5, 3)],  # bar
                         'Tcon': temp_con,  # K
-                        'Tev': temp_ev,  # K
+                        'Tev': temp_ev,
+                        'qx': [0,],  # K
                         "h1": to_kvalues(h1),  # KJ/kg
                         "h2": to_kvalues(h2),  # KJ/kg
                         "h3": to_kvalues(h3),  # KJ/kg
@@ -493,12 +494,12 @@ def steam_compression_cycle(fluid=None, temp_con=None, temp_ev=None):
 
 
 if __name__ == '__main__':
-    # answer = simple_throttling_liq()
+    answer = simple_throttling_liq()
     # answer = simple_throttling_refr()
     # answer = throttling_prerefr_liq()
     # answer = throttling_prerefr_refr() тут ошибка с аргоном
     # answer = double_throttling_liq()
     # answer = double_throttling_refr() тут ошибка с аргоном
-    answer = steam_compression_cycle()
+    # answer = steam_compression_cycle()
     for variable, value in answer.items():
         print(f"{variable} --- {value}")

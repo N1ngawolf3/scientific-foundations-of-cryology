@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>427</width>
-    <height>299</height>
+    <height>241</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <property name="geometry">
     <rect>
      <x>110</x>
-     <y>240</y>
+     <y>200</y>
      <width>191</width>
      <height>28</height>
     </rect>
@@ -62,7 +62,7 @@
    <property name="geometry">
     <rect>
      <x>-10</x>
-     <y>210</y>
+     <y>170</y>
      <width>471</width>
      <height>20</height>
     </rect>
@@ -85,22 +85,6 @@
      <widget class="QLabel" name="label_2">
       <property name="text">
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Рабочее тело:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QLineEdit" name="fluid_lineEdit">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="frame">
-       <bool>true</bool>
-      </property>
-      <property name="readOnly">
-       <bool>false</bool>
-      </property>
-      <property name="placeholderText">
-       <string>(Например, R404a)</string>
       </property>
      </widget>
     </item>
@@ -137,6 +121,9 @@
        <string>В градусах Цельсия</string>
       </property>
      </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QComboBox" name="fluid_comboBox"/>
     </item>
    </layout>
   </widget>
