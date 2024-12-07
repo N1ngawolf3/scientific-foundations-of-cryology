@@ -2,8 +2,6 @@ import jinja2
 import pdfkit
 from main import *
 import base64
-from db import add_solved_task, check_presence, connection
-import traceback
 
 # TODO каким-то хером отследить одно отрицательное, одно положительное значение
 funcs = {'ЦПДО': simple_throttling_liq,
@@ -15,9 +13,20 @@ funcs = {'ЦПДО': simple_throttling_liq,
          'ПКЦ': steam_compression_cycle
          }
 
+full_funcs_name = ['Цикл простого дросселирования Ожижительный режим',
+                   'Цикл простого дросселирования Рефрижераторный режим',
+                   'Дроссельный цикл с предварительный охлаждением Рефрижераторный режим',
+                   'Дроссельный цикл с предварительный охлаждением Ожижительный режим',
+                   'Цикл двойного дросселирования Рефрижераторный режим',
+                   'Цикл двойного дросселирования Ожижительный режим',
+                   'Парокомпрессионный цикл']
+
+funcs_list = dict(zip(full_funcs_name, funcs.values()))
+# funcs_name_list = dict(zip(full_funcs_name, funcs.keys()))
+
 
 def get_graph_image(cycle_name):
-    with open(f'graphs/{funcs[cycle_name].__name__}_graph.jpg', 'rb') as image_file:
+    with open(f'graphs/{funcs_list[cycle_name].__name__}_graph.jpg', 'rb') as image_file:
         return str(base64.b64encode(image_file.read()))[2:]
 
 
@@ -55,43 +64,17 @@ def template_gen(context, template_env, func_name):
             return output_text
 
 
-def main():
-    problem = input(f'Выберите задачу из списка: {list(funcs.keys())}\n'
-                    f'Введите задачу (для завершения оставьте поле пустым): ')
-    while problem != '':
-        try:
-            context = funcs[problem]()
-            surname = input('Введите фамилию: ')
-            number = input('Введите номер варианта: ')
-            if 'Tx' in context:
-                context['p_in'] = None
-            if context['p_in'] is not None:
-                context['Tx'] = None
-            if 'Tcond' not in context:
-                context['Tcond'] = None
-                context['Tev'] = None
-            context['image_cycle'] = get_graph_image(problem)
-            template_loader = jinja2.FileSystemLoader('./')
-            template_env = jinja2.Environment(loader=template_loader)
-            output_text = template_gen(context, template_env, funcs[problem].__name__)
-            config = pdfkit.configuration(wkhtmltopdf="C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe")
-            pdfkit.from_string(output_text, f'created_pdf/{problem}_{surname}_{number}.pdf',
-                               configuration=config, css='html_templates/style.css')
-            add_solved_task(number, surname, problem, context['fluid'], context['p'][0],
-                            context['p'][1], context['p_in'], context['Tx'], context['Tcond'], context['Tev'])
-            problem = input(f'Выберите задачу из списка: {list(funcs.keys())}\n'
-                            f'Введите задачу (для завершения оставьте поле пустым): ')
-            # else:
-            #    print('Данная задача уже решена')
-            #    problem = input(f'Выберите задачу из списка: {list(funcs.keys())}\n'
-            #                    f'Введите задачу (для завершения оставьте поле пустым): ')
-        except KeyError as ex:
-            traceback.print_exception(ex)
-            print(f'Видимо ты указал что-то не так: {ex}')
-            problem = input('Введите задачу (для завершения оставьте поле пустым): ')
-    connection.close()
-    print('Файлы успешно созданы')
+def topdf(func_name, surname, number, context, path):
+    context['image_cycle'] = get_graph_image(func_name)
+    template_loader = jinja2.FileSystemLoader('./')
+    template_env = jinja2.Environment(loader=template_loader)
+    output_text = template_gen(context, template_env, funcs_list[func_name].__name__)
+    config = pdfkit.configuration(wkhtmltopdf="C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe")
+    pdfkit.from_string(output_text, f'{path}/{func_name}_{surname}_{number}.pdf',
+                       configuration=config, css='html_templates/style.css')
 
 
 if __name__ == '__main__':
-    main()
+    # topdf()
+    pass
+
